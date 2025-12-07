@@ -1,10 +1,5 @@
-import type { Metadata } from 'next';
 import './globals.css';
 
-export const metadata: Metadata = {
-  title: 'Suggested Items Demo',
-  description: 'Demonstrating Next.js cache function with suggested items',
-};
 
 export default function RootLayout({
   children,
