@@ -1,5 +1,5 @@
-import { getCachedSuggestedItems } from '../lib/cache';
-import type { SuggestedItem } from '../lib/suggested-items';
+import { getCachedSuggestedItems } from '../../lib/cache';
+import type { SuggestedItem } from '../../lib/suggested-items';
 
 interface SuggestedItemsProps {
   category?: string;
