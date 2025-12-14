@@ -1,42 +1,35 @@
-import { Suspense } from 'react';
-import SuggestedItems from './components/SuggestedItems';
-
-
-function LoadingSkeleton() {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {Array.from({ length: 8 }).map((_, i) => (
-        <div key={i} className="item-card animate-pulse">
-          <div className="w-full h-48 bg-gray-200 rounded-t-lg"></div>
-          <div className="p-4 space-y-3">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-3 bg-gray-200 rounded w-full"></div>
-            <div className="h-3 bg-gray-200 rounded w-2/3"></div>
-            <div className="flex justify-between items-center">
-              <div className="h-4 bg-gray-200 rounded w-16"></div>
-              <div className="h-4 bg-gray-200 rounded w-12"></div>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
+import Link from 'next/link'
 
 export default function HomePage() {
+  // Generate some random ad IDs for testing
+  const adIds = Array.from({ length: 10 }, (_, i) => Math.floor(Math.random() * 100000) + 1)
 
   return (
-    <div className="space-y-8">
-      <Suspense
-        key={'all'}
-        fallback={
-          <div className="space-y-6">
-            <LoadingSkeleton />
-          </div>
-        }
-      >
-        <SuggestedItems count={12} />
-      </Suspense>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold text-center mb-8">Load Testing Demo - Subito.it Style</h1>
+      <div className="max-w-2xl mx-auto">
+        <h2 className="text-xl font-semibold mb-4">Sample Ad Links for Testing:</h2>
+        <div className="grid gap-2">
+          {adIds.map(id => (
+            <Link
+              key={id}
+              href={`/ad/${id}`}
+              className="block p-3 bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow"
+            >
+              <span className="text-blue-600 hover:text-blue-800 font-medium">Annuncio #{id}</span>
+            </Link>
+          ))}
+        </div>
+        <div className="mt-8 p-4 bg-blue-50 rounded-lg">
+          <h3 className="font-semibold text-blue-900 mb-2">Come testare:</h3>
+          <p className="text-blue-800 text-sm">
+            Visita qualsiasi URL del tipo{' '}
+            <code className="bg-white px-1 rounded">/ad/[numero]</code> per vedere una pagina di
+            dettaglio annuncio simulata. Ogni ID genererà contenuto pseudo-casuale per il load
+            testing.
+          </p>
+        </div>
+      </div>
     </div>
-  );
+  )
 }
