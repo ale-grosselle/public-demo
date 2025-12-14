@@ -15,15 +15,6 @@ export interface AdData {
   publishedDate: string;
   views: number;
   images: string[];
-  seller: {
-    name: string;
-    rating: number;
-    reviewCount: number;
-    joinDate: string;
-    isVerified: boolean;
-  };
-  features: string[];
-  specifications: { [key: string]: string };
 }
 
 // Sample data arrays for random generation
@@ -97,19 +88,6 @@ const descriptions = [
   'In perfette condizioni, sempre custodito in ambiente asciutto e pulito.',
 ];
 
-const sellerNames = [
-  'Marco Rossi',
-  'Giulia Bianchi',
-  'Alessandro Conti',
-  'Francesca Romano',
-  'Davide Ferrari',
-  'Chiara Ricci',
-  'Matteo Greco',
-  'Elena Fiore',
-  'Luca Barbieri',
-  'Silvia Marchetti',
-];
-
 const features = [
   'Garanzia residua',
   'Scontrino disponibile',
@@ -152,7 +130,6 @@ export function generateMockAdData(id: string): AdData {
   );
   const condition = getRandomFromArray(conditions, seedBase + 5);
   const description = getRandomFromArray(descriptions, seedBase + 6);
-  const sellerName = getRandomFromArray(sellerNames, seedBase + 7);
 
   // Generate price based on category (seeded randomness)
   let basePrice = 50;
@@ -174,14 +151,12 @@ export function generateMockAdData(id: string): AdData {
   publishedDate.setDate(publishedDate.getDate() - daysAgo);
 
   // Generate seller data
-  const rating = 3.5 + seededRandom(seedBase + 11) * 1.5; // 3.5 to 5.0
-  const reviewCount = Math.floor(seededRandom(seedBase + 12) * 100) + 5;
   const joinYearsAgo = Math.floor(seededRandom(seedBase + 13) * 8) + 1;
   const joinDate = new Date();
   joinDate.setFullYear(joinDate.getFullYear() - joinYearsAgo);
 
   // Generate random features
-  const selectedFeatures = [];
+  const selectedFeatures: Array<string> = [];
   for (let i = 0; i < 3; i++) {
     const feature = getRandomFromArray(features, seedBase + 14 + i);
     if (!selectedFeatures.includes(feature)) {
@@ -232,14 +207,5 @@ export function generateMockAdData(id: string): AdData {
     publishedDate: publishedDate.toISOString(),
     views,
     images,
-    seller: {
-      name: sellerName,
-      rating: Math.round(rating * 10) / 10,
-      reviewCount,
-      joinDate: joinDate.toISOString(),
-      isVerified: seededRandom(seedBase + 15) > 0.3,
-    },
-    features: selectedFeatures,
-    specifications,
   };
 }
