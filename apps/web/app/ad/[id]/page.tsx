@@ -1,12 +1,5 @@
-import { notFound } from 'next/navigation';
 import ImageGallery from '../../components/ImageGallery';
 import { generateMockAdData } from '@/lib/mock-ad-data';
-
-interface AdPageProps {
-  params: {
-    id: string;
-  };
-}
 
 function formatPrice(price: number, currency: string): string {
   return new Intl.NumberFormat('it-IT', {
@@ -15,24 +8,19 @@ function formatPrice(price: number, currency: string): string {
   }).format(price);
 }
 
-function formatDate(dateString: string): string {
-  return new Intl.DateTimeFormat('it-IT', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }).format(new Date(dateString));
-}
-
 function formatViews(views: number): string {
   return new Intl.NumberFormat('it-IT').format(views);
 }
 
-export default async function AdPage({ params }: AdPageProps) {
+export default async function AdPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
 
-  // Validate ID is numeric
-  if (!/^\d+$/.test(id)) {
-    notFound();
+  if (!id) {
+    return <h1>ERROR!</h1>;
   }
 
   const adData = generateMockAdData(id);
@@ -54,7 +42,6 @@ export default async function AdPage({ params }: AdPageProps) {
                   </p>
                 </div>
                 <div className="text-left sm:text-right text-sm text-gray-500">
-                  <p>Pubblicato il {formatDate(adData.publishedDate)}</p>
                   <p>{formatViews(adData.views)} visualizzazioni</p>
                 </div>
               </div>
@@ -62,9 +49,6 @@ export default async function AdPage({ params }: AdPageProps) {
               <div className="flex flex-wrap gap-2 mb-6">
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                   {adData.category}
-                </span>
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                  {adData.subcategory}
                 </span>
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                   {adData.condition}
@@ -95,13 +79,15 @@ export default async function AdPage({ params }: AdPageProps) {
   );
 }
 
-export async function generateMetadata({ params }: AdPageProps) {
-  const { id } = params;
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
 
-  if (!/^\d+$/.test(id)) {
-    return {
-      title: 'Annuncio non trovato',
-    };
+  if (!id) {
+    return {};
   }
 
   const adData = generateMockAdData(id);

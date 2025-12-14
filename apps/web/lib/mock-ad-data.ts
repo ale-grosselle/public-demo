@@ -10,9 +10,7 @@ export interface AdData {
     region: string;
   };
   category: string;
-  subcategory: string;
   condition: string;
-  publishedDate: string;
   views: number;
   images: string[];
 }
@@ -50,26 +48,11 @@ const cities = [
 ];
 
 const categories = [
-  {
-    category: 'Elettronica',
-    subcategories: ['Telefoni', 'Computer', 'TV e Audio', 'Console'],
-  },
-  {
-    category: 'Casa e Giardino',
-    subcategories: ['Arredamento', 'Elettrodomestici', 'Decorazioni'],
-  },
-  {
-    category: 'Auto e Moto',
-    subcategories: ['Auto usate', 'Moto', 'Accessori auto'],
-  },
-  {
-    category: 'Sport e Hobby',
-    subcategories: ['Biciclette', 'Palestra', 'Calcio', 'Tennis'],
-  },
-  {
-    category: 'Immobiliare',
-    subcategories: ['Vendita', 'Affitto', 'Commerciale'],
-  },
+  'Elettronica',
+  'Casa e Giardino',
+  'Auto e Moto',
+  'Sport e Hobby',
+  'Immobiliare',
 ];
 
 const conditions = [
@@ -86,18 +69,6 @@ const descriptions = [
   'Acquistato da poco ma devo vendere per motivi familiari. Praticamente nuovo.',
   'Usato pochissimo, vendo per cambio modello. Include tutti gli accessori originali.',
   'In perfette condizioni, sempre custodito in ambiente asciutto e pulito.',
-];
-
-const features = [
-  'Garanzia residua',
-  'Scontrino disponibile',
-  'Accessori inclusi',
-  'Perfettamente funzionante',
-  'Nessun graffio',
-  'Confezione originale',
-  'Manuale incluso',
-  'Batteria ottima',
-  'Schermo perfetto',
 ];
 
 function seededRandom(seed: number): number {
@@ -124,18 +95,14 @@ export function generateMockAdData(id: string): AdData {
   const title = getRandomFromArray(titles, seedBase + 1);
   const location = getRandomFromArray(cities, seedBase + 2);
   const categoryData = getRandomFromArray(categories, seedBase + 3);
-  const subcategory = getRandomFromArray(
-    categoryData.subcategories,
-    seedBase + 4,
-  );
   const condition = getRandomFromArray(conditions, seedBase + 5);
   const description = getRandomFromArray(descriptions, seedBase + 6);
 
   // Generate price based on category (seeded randomness)
   let basePrice = 50;
-  if (categoryData.category === 'Elettronica') basePrice = 200;
-  if (categoryData.category === 'Auto e Moto') basePrice = 5000;
-  if (categoryData.category === 'Immobiliare') basePrice = 150000;
+  if (categoryData === 'Elettronica') basePrice = 200;
+  if (categoryData === 'Auto e Moto') basePrice = 5000;
+  if (categoryData === 'Immobiliare') basePrice = 150000;
 
   const priceVariation = seededRandom(seedBase + 8) * 0.8 + 0.6; // 0.6 to 1.4 multiplier
   const price = Math.round(basePrice * priceVariation);
@@ -155,41 +122,6 @@ export function generateMockAdData(id: string): AdData {
   const joinDate = new Date();
   joinDate.setFullYear(joinDate.getFullYear() - joinYearsAgo);
 
-  // Generate random features
-  const selectedFeatures: Array<string> = [];
-  for (let i = 0; i < 3; i++) {
-    const feature = getRandomFromArray(features, seedBase + 14 + i);
-    if (!selectedFeatures.includes(feature)) {
-      selectedFeatures.push(feature);
-    }
-  }
-
-  // Generate specifications based on category
-  const specifications: { [key: string]: string } = {};
-  if (categoryData.category === 'Elettronica') {
-    specifications['Marca'] = getRandomFromArray(
-      ['Apple', 'Samsung', 'Sony', 'LG'],
-      seedBase + 20,
-    );
-    specifications['Anno'] = `${2020 + (numericId % 4)}`;
-    specifications['Memoria'] = getRandomFromArray(
-      ['64GB', '128GB', '256GB', '512GB'],
-      seedBase + 21,
-    );
-  }
-  if (categoryData.category === 'Auto e Moto') {
-    specifications['Marca'] = getRandomFromArray(
-      ['Fiat', 'Volkswagen', 'BMW', 'Audi'],
-      seedBase + 20,
-    );
-    specifications['Anno'] = `${2015 + (numericId % 9)}`;
-    specifications['Chilometraggio'] = `${20000 + (numericId % 80000)} km`;
-    specifications['Alimentazione'] = getRandomFromArray(
-      ['Benzina', 'Diesel', 'GPL', 'Ibrida'],
-      seedBase + 22,
-    );
-  }
-
   // Generate 3-6 images
   const imageCount = 3 + (numericId % 4);
   const images = generateImageUrls(id, imageCount);
@@ -199,12 +131,10 @@ export function generateMockAdData(id: string): AdData {
     title,
     price,
     currency: '€',
-    description: `${description} ${title}. Disponibile per visione in ${location.city}. Contattami per maggiori informazioni o per fissare un appuntamento.`,
+    description: `${description} ${title}.`,
     location,
-    category: categoryData.category,
-    subcategory,
+    category: categoryData,
     condition,
-    publishedDate: publishedDate.toISOString(),
     views,
     images,
   };

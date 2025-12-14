@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 
 interface ImageGalleryProps {
   images: string[];
@@ -28,15 +29,13 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
   return (
     <div className="bg-white rounded-lg shadow-sm overflow-hidden">
       <div className="relative aspect-[4/3] bg-gray-100">
-        <div className="image-placeholder w-full h-full flex items-center justify-center">
-          <div className="text-center text-gray-500">
-            <div className="text-4xl mb-2">📷</div>
-            <div className="text-sm">
-              Immagine {currentImage + 1} di {images.length}
-            </div>
-            <div className="text-xs mt-1">{title}</div>
-          </div>
-        </div>
+        <Image
+          src={images[currentImage]}
+          alt={`${title} - Immagine ${currentImage + 1} di ${images.length}`}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
 
         {images.length > 1 && (
           <>
@@ -62,7 +61,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
         <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1">
           {images.map((_, index) => (
             <button
-              key={index}
+              key={`dot-${index}`}
               onClick={() => setCurrentImage(index)}
               className={`w-2 h-2 rounded-full transition-colors ${
                 index === currentImage ? 'bg-white' : 'bg-white bg-opacity-50'
@@ -75,17 +74,23 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
       {images.length > 1 && (
         <div className="p-4">
           <div className="flex space-x-2 overflow-x-auto">
-            {images.slice(0, 8).map((_, index) => (
+            {images.slice(0, 8).map((imageUrl, index) => (
               <button
-                key={index}
+                key={`thumbnail-${index}`}
                 onClick={() => setCurrentImage(index)}
-                className={`flex-shrink-0 w-20 h-20 rounded border-2 transition-colors ${
+                className={`flex-shrink-0 w-20 h-20 rounded border-2 transition-colors overflow-hidden relative ${
                   index === currentImage
                     ? 'border-blue-500'
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
-                <div className="image-placeholder w-full h-full rounded"></div>
+                <Image
+                  src={imageUrl}
+                  alt={`${title} - Miniatura ${index + 1}`}
+                  fill
+                  className="object-cover"
+                  sizes="80px"
+                />
               </button>
             ))}
             {images.length > 8 && (
