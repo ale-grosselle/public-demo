@@ -1,19 +1,19 @@
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
-import ImageGallery from '@/app/components/ImageGallery'
-import { generateMockAdData } from '@/lib/mock-ad-data'
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import ImageGallery from '@/app/components/ImageGallery';
+import { generateMockAdData } from '@/lib/mock-ad-data';
 
 interface AdPageProps {
   params: {
-    id: string
-  }
+    id: string;
+  };
 }
 
 function formatPrice(price: number, currency: string): string {
   return new Intl.NumberFormat('it-IT', {
     style: 'currency',
     currency: currency === '€' ? 'EUR' : 'USD',
-  }).format(price)
+  }).format(price);
 }
 
 function formatDate(dateString: string): string {
@@ -21,44 +21,61 @@ function formatDate(dateString: string): string {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-  }).format(new Date(dateString))
+  }).format(new Date(dateString));
 }
 
 function formatViews(views: number): string {
-  return new Intl.NumberFormat('it-IT').format(views)
+  return new Intl.NumberFormat('it-IT').format(views);
 }
 
 export default function AdPage({ params }: AdPageProps) {
-  const { id } = params
+  const { id } = params;
 
   // Validate ID is numeric
   if (!/^\d+$/.test(id)) {
-    notFound()
+    notFound();
   }
 
-  const adData = generateMockAdData(id)
+  const adData = generateMockAdData(id);
 
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link href="/" className="text-xl sm:text-2xl font-bold text-blue-600">
+            <Link
+              href="/"
+              className="text-xl sm:text-2xl font-bold text-blue-600"
+            >
               SubitoDemo
             </Link>
             <nav className="hidden md:flex space-x-8">
-              <a href="#" className="text-gray-600 hover:text-gray-900 text-sm">
+              <a
+                href="/fake"
+                className="text-gray-600 hover:text-gray-900 text-sm"
+              >
                 Inserisci annuncio
               </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 text-sm">
+              <a
+                href="/fake"
+                className="text-gray-600 hover:text-gray-900 text-sm"
+              >
                 I miei annunci
               </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 text-sm">
+              <a
+                href="/fake"
+                className="text-gray-600 hover:text-gray-900 text-sm"
+              >
                 Preferiti
               </a>
             </nav>
             <button className="md:hidden p-2">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -123,12 +140,16 @@ export default function AdPage({ params }: AdPageProps) {
 
               <div className="prose max-w-none">
                 <h3 className="text-lg font-semibold mb-3">Descrizione</h3>
-                <p className="text-gray-700 leading-relaxed">{adData.description}</p>
+                <p className="text-gray-700 leading-relaxed">
+                  {adData.description}
+                </p>
               </div>
 
               {adData.features.length > 0 && (
                 <div className="mt-6">
-                  <h3 className="text-lg font-semibold mb-3">Caratteristiche</h3>
+                  <h3 className="text-lg font-semibold mb-3">
+                    Caratteristiche
+                  </h3>
                   <div className="flex flex-wrap gap-2">
                     {adData.features.map((feature, index) => (
                       <span
@@ -146,12 +167,19 @@ export default function AdPage({ params }: AdPageProps) {
                 <div className="mt-6">
                   <h3 className="text-lg font-semibold mb-3">Specifiche</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {Object.entries(adData.specifications).map(([key, value]) => (
-                      <div key={key} className="flex justify-between py-2 border-b border-gray-100">
-                        <span className="font-medium text-gray-700">{key}:</span>
-                        <span className="text-gray-900">{value}</span>
-                      </div>
-                    ))}
+                    {Object.entries(adData.specifications).map(
+                      ([key, value]) => (
+                        <div
+                          key={key}
+                          className="flex justify-between py-2 border-b border-gray-100"
+                        >
+                          <span className="font-medium text-gray-700">
+                            {key}:
+                          </span>
+                          <span className="text-gray-900">{value}</span>
+                        </div>
+                      ),
+                    )}
                   </div>
                 </div>
               )}
@@ -161,7 +189,8 @@ export default function AdPage({ params }: AdPageProps) {
                 <div className="flex items-center text-gray-700">
                   <span className="mr-2">📍</span>
                   <span>
-                    {adData.location.city}, {adData.location.province} ({adData.location.region})
+                    {adData.location.city}, {adData.location.province} (
+                    {adData.location.region})
                   </span>
                 </div>
               </div>
@@ -170,7 +199,9 @@ export default function AdPage({ params }: AdPageProps) {
 
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-semibold mb-4">Contatta il venditore</h3>
+              <h3 className="text-lg font-semibold mb-4">
+                Contatta il venditore
+              </h3>
 
               <div className="flex items-center mb-4">
                 <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold mr-3">
@@ -210,7 +241,9 @@ export default function AdPage({ params }: AdPageProps) {
 
             {/* Safety tips */}
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <h4 className="font-semibold text-yellow-800 mb-2">⚠️ Consigli per la sicurezza</h4>
+              <h4 className="font-semibold text-yellow-800 mb-2">
+                ⚠️ Consigli per la sicurezza
+              </h4>
               <ul className="text-sm text-yellow-700 space-y-1">
                 <li>• Incontra sempre in luoghi pubblici</li>
                 <li>• Controlla il prodotto prima del pagamento</li>
@@ -223,7 +256,7 @@ export default function AdPage({ params }: AdPageProps) {
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-semibold mb-4">Annunci simili</h3>
               <div className="space-y-4">
-                {[1, 2, 3].map(i => (
+                {[1, 2, 3].map((i) => (
                   <Link
                     key={i}
                     href={`/ad/${parseInt(id) + i}`}
@@ -236,9 +269,14 @@ export default function AdPage({ params }: AdPageProps) {
                           Prodotto simile #{parseInt(id) + i}
                         </p>
                         <p className="text-blue-600 font-semibold text-sm">
-                          € {Math.round(adData.price * (0.8 + Math.random() * 0.4))}
+                          €{' '}
+                          {Math.round(
+                            adData.price * (0.8 + Math.random() * 0.4),
+                          )}
                         </p>
-                        <p className="text-gray-500 text-xs">{adData.location.city}</p>
+                        <p className="text-gray-500 text-xs">
+                          {adData.location.city}
+                        </p>
                       </div>
                     </div>
                   </Link>
@@ -252,24 +290,26 @@ export default function AdPage({ params }: AdPageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center text-gray-500 text-sm">
             <p>© 2024 SubitoDemo - Load Testing Application</p>
-            <p className="mt-2">Annuncio ID: {id} | Generato per test di carico Next.js</p>
+            <p className="mt-2">
+              Annuncio ID: {id} | Generato per test di carico Next.js
+            </p>
           </div>
         </div>
       </footer>
     </div>
-  )
+  );
 }
 
 export async function generateMetadata({ params }: AdPageProps) {
-  const { id } = params
+  const { id } = params;
 
   if (!/^\d+$/.test(id)) {
     return {
       title: 'Annuncio non trovato',
-    }
+    };
   }
 
-  const adData = generateMockAdData(id)
+  const adData = generateMockAdData(id);
 
   return {
     title: `${adData.title} - ${formatPrice(adData.price, adData.currency)} | SubitoDemo`,
@@ -279,5 +319,5 @@ export async function generateMetadata({ params }: AdPageProps) {
       description: adData.description,
       type: 'website',
     },
-  }
+  };
 }

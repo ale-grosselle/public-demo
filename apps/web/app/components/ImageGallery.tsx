@@ -1,14 +1,14 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
+import { useState } from 'react';
 
 interface ImageGalleryProps {
-  images: string[]
-  title: string
+  images: string[];
+  title: string;
 }
 
 export default function ImageGallery({ images, title }: ImageGalleryProps) {
-  const [currentImage, setCurrentImage] = useState(0)
+  const [currentImage, setCurrentImage] = useState(0);
 
   if (images.length === 0) {
     return (
@@ -22,7 +22,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -48,7 +48,9 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
               ←
             </button>
             <button
-              onClick={() => setCurrentImage(Math.min(images.length - 1, currentImage + 1))}
+              onClick={() =>
+                setCurrentImage(Math.min(images.length - 1, currentImage + 1))
+              }
               disabled={currentImage === images.length - 1}
               className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full disabled:opacity-50 disabled:cursor-not-allowed hover:bg-opacity-70 transition-opacity"
             >
@@ -95,5 +97,5 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
         </div>
       )}
     </div>
-  )
+  );
 }

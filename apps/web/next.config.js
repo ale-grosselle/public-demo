@@ -1,4 +1,4 @@
-const path = require('path')
+const path = require('path');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -6,6 +6,6 @@ const nextConfig = {
   turbopack: {
     root: path.resolve(__dirname, '../..'), // Set the monorepo root
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

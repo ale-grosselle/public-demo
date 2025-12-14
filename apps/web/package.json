@@ -5,9 +5,11 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev --port 3001",
-    "lint": "next lint",
-    "start": "next start",
-    "check-types": "tsc --noEmit"
+    "lint": "oxlint .",
+    "lint:fix": "oxlint . --fix",
+    "format": "oxfmt .",
+    "format:check": "oxfmt . --check",
+    "start": "next start"
   },
   "dependencies": {
     "next": "^16.0.7",
