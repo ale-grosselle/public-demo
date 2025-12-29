@@ -1,23 +1,37 @@
 import ImageGallery from '../../components/ImageGallery';
-import { generateMockAdData } from '@/lib/mock-ad-data';
-
-function formatPrice(price: number, currency: string): string {
-  return new Intl.NumberFormat('it-IT', {
-    style: 'currency',
-    currency: currency === '€' ? 'EUR' : 'USD',
-  }).format(price);
-}
-
-function formatViews(views: number): string {
-  return new Intl.NumberFormat('it-IT').format(views);
-}
+import { generateMockAdData } from '@/app/lib/mock-ad-data';
+import { headers } from 'next/headers';
+import {
+  detectDeviceType,
+  getDeviceDescription,
+} from '@/app/lib/device-detector';
+import { formatPrice } from '@/app/lib/formatPrice';
 
 export default async function AdPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
+  const [headersSettled, paramsSettled] = await Promise.allSettled([
+    headers(),
+    params,
+  ]);
+
+  if (
+    paramsSettled.status === 'rejected' ||
+    headersSettled.status === 'rejected'
+  ) {
+    return <h1>ERROR!</h1>;
+  }
+
+  const { id } = paramsSettled.value;
+
+  const headersList = headersSettled.value;
+  const userAgent = headersList.get('user-agent') || '';
+
+  // Detect device type
+  const deviceType = detectDeviceType(userAgent);
+  const deviceDescription = getDeviceDescription(deviceType);
 
   if (!id) {
     return <h1>ERROR!</h1>;
@@ -35,14 +49,11 @@ export default async function AdPage({
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4">
                 <div className="mb-4 sm:mb-0">
                   <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-                    {adData.title}
+                    [{deviceDescription}] {adData.title}
                   </h1>
                   <p className="text-2xl sm:text-3xl font-bold text-red-600">
                     {formatPrice(adData.price, adData.currency)}
                   </p>
-                </div>
-                <div className="text-left sm:text-right text-sm text-gray-500">
-                  <p>{formatViews(adData.views)} visualizzazioni</p>
                 </div>
               </div>
 

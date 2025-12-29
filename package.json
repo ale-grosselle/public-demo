@@ -9,9 +9,11 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "start": "turbo run start",
     "dev:web": "cd apps/web && npm run dev"
   },
   "devDependencies": {
+    "@types/node": "^25.0.3",
     "oxfmt": "^0.17.0",
     "oxlint": "^1.32.0",
     "turbo": "^2.6.0",
