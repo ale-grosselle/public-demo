@@ -1,26 +1,16 @@
 import { generateMockAdData } from '@/app/lib/mock-ad-data';
 import { headers } from 'next/headers';
 import { detectDeviceType } from '@/app/lib/device-detector';
-import { AdItem } from '@/app/components/AdItem';
+import { AdItemWithUseCache } from '@/app/components/AdItemWithUseCache';
 
-export default async function AdPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const [headersSettled, paramsSettled] = await Promise.allSettled([
+export async function AdPageContent({ id }: { id: string }) {
+  const [headersSettled] = await Promise.allSettled([
     headers(),
-    params,
   ]);
 
-  if (
-    paramsSettled.status === 'rejected' ||
-    headersSettled.status === 'rejected'
-  ) {
+  if (headersSettled.status === 'rejected') {
     return <h1>ERROR!</h1>;
   }
-
-  const { id } = paramsSettled.value;
 
   const headersList = headersSettled.value;
   const userAgent = headersList.get('user-agent') || '';
@@ -34,5 +24,5 @@ export default async function AdPage({
 
   const adData = generateMockAdData(id);
 
-  return <AdItem adData={adData} deviceType={deviceType} />;
+  return <AdItemWithUseCache adData={adData} deviceType={deviceType} />;
 }
