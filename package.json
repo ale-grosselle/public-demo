@@ -10,8 +10,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "start": "turbo run start",
-    "dev:web": "cd apps/web && npm run dev"
+    "start": "turbo run start"
   },
   "devDependencies": {
     "@types/node": "^25.0.3",
