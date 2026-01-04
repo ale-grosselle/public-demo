@@ -10,6 +10,7 @@ export const AdItem = ({
   adData: AdData;
   deviceType: DeviceType;
 }) => {
+  console.log('USE CACHE adData', adData.id, 'deviceType', deviceType);
   // Detect device type
   const deviceDescription = getDeviceDescription(deviceType);
 
@@ -23,7 +24,8 @@ export const AdItem = ({
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4">
                 <div className="mb-4 sm:mb-0">
                   <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-                    [{deviceDescription}] {adData.title}
+                    [{deviceDescription}] {adData.title} [
+                    {new Date().toTimeString()}]
                   </h1>
                   <p className="text-2xl sm:text-3xl font-bold text-red-600">
                     {formatPrice(adData.price, adData.currency)}

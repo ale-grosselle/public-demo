@@ -9,7 +9,7 @@ const execAsync = promisify(exec);
 // Configuration
 const PORT = 3000;
 const BASE_URL = `http://localhost:${PORT}`;
-const TOTAL_REQUESTS = 1000;
+const TOTAL_REQUESTS = 10000;
 const PARALLEL_REQUESTS = 100;
 const BATCHES = TOTAL_REQUESTS / PARALLEL_REQUESTS;
 
@@ -52,68 +52,38 @@ interface TestResults {
 }
 
 // Find Next.js server process
-async function findNextServerProcess(): Promise<number> {
-  const { stdout } = await execAsync(`lsof -ti:${PORT}`);
-  return Number(stdout.trim());
+async function findNextServerProcess(): Promise<string> {
+  const { stdout } = await execAsync(`lsof -t -iTCP:${PORT} -sTCP:LISTEN`);
+  console.log(`stdout: ${stdout}`);
+  const splitAndTrimmed = stdout.trim().split('\n');
+  return splitAndTrimmed.at(-1) ?? '';
 }
 
 // Memory and CPU monitoring for Next.js server process
 async function getMemoryUsage(): Promise<MemoryUsage> {
   const nextPid = await findNextServerProcess();
-  try {
-    // Get memory usage for the Next.js process
-    const { stdout } = await execAsync(`ps -p ${nextPid} -o rss,vsz`);
-    const lines = stdout.trim().split('\n');
-    if (lines.length > 1) {
-      const [rss, vsz] = lines[1].trim().split(/\s+/).map(Number);
-      return {
-        rss: Math.round((rss / 1024) * 100) / 100, // MB (RSS is in KB)
-        heapUsed: 0, // Not available from ps
-        heapTotal: Math.round((vsz / 1024) * 100) / 100, // MB (VSZ is in KB)
-        external: 0, // Not available from ps
-      };
-    }
-  } catch (error) {
-    console.warn(
-      '⚠️  Could not get memory usage for Next.js process:',
-      (error as Error).message,
-    );
-    // Return zeros instead of fallback to current process
-    return {
-      rss: 0,
-      heapUsed: 0,
-      heapTotal: 0,
-      external: 0,
-    };
-  }
 
-  // This should never be reached since we now handle errors above
+  // Get memory usage for the Next.js process
+  const { stdout } = await execAsync(`ps -p ${nextPid} -o rss,vsz`);
+  const lines = stdout.trim().split('\n');
+  const [rss, vsz] = lines[1].trim().split(/\s+/).map(Number);
   return {
-    rss: 0,
-    heapUsed: 0,
-    heapTotal: 0,
-    external: 0,
+    rss: Math.round((rss / 1024) * 100) / 100, // MB (RSS is in KB)
+    heapUsed: 0, // Not available from ps
+    heapTotal: Math.round((vsz / 1024) * 100) / 100, // MB (VSZ is in KB)
+    external: 0, // Not available from ps
   };
 }
 
 async function getCPUUsage(): Promise<number[]> {
   const nextPid = await findNextServerProcess();
 
-  if (nextPid) {
-    try {
-      // Get CPU usage for the Next.js process
-      const { stdout } = await execAsync(`ps -p ${nextPid} -o %cpu`);
-      const lines = stdout.trim().split('\n');
-      if (lines.length > 1) {
-        const cpuPercent = Number.parseFloat(lines[1].trim());
-        return [cpuPercent]; // Return as array for consistency
-      }
-    } catch (error) {
-      console.warn(
-        '⚠️  Could not get CPU usage for Next.js process:',
-        (error as Error).message,
-      );
-    }
+  // Get CPU usage for the Next.js process
+  const { stdout } = await execAsync(`ps -p ${nextPid} -o %cpu`);
+  const lines = stdout.trim().split('\n');
+  if (lines.length > 1) {
+    const cpuPercent = Number.parseFloat(lines[1].trim());
+    return [cpuPercent]; // Return as array for consistency
   }
 
   // Fallback to system-wide CPU info
@@ -305,12 +275,11 @@ async function main(): Promise<void> {
       requestUrls,
     );
 
-    // Memory leak analysis
-    console.log('\n🔍 Memory Leak Analysis:');
+    console.log('\n🔍 Memory Analysis:');
     const memoryDiff1 =
-      firstRun.memory.final.heapUsed - firstRun.memory.initial.heapUsed;
+      firstRun.memory.final.heapTotal - firstRun.memory.initial.heapTotal;
     const memoryDiff2 =
-      secondRun.memory.final.heapUsed - secondRun.memory.initial.heapUsed;
+      secondRun.memory.final.heapTotal - secondRun.memory.initial.heapTotal;
 
     console.log(
       `  First run memory change: ${memoryDiff1 > 0 ? '+' : ''}${Math.round(memoryDiff1 * 100) / 100} MB`,

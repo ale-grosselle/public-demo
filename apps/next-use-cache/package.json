@@ -10,8 +10,9 @@
     "format": "oxfmt .",
     "format:check": "oxfmt . --check",
     "check-types": "tsc --noEmit",
-    "start": "next start",
-    "performance-test": "tsx ./scripts/performance-test.ts"
+    "start": "NODE_OPTIONS=--max-old-space-size=200 next start",
+    "performance-test": "tsx ./scripts/performance-test.ts",
+    "load-test:ts": "tsx --expose-gc ./scripts/load-test.ts"
   },
   "dependencies": {
     "next": "^16.1.1",
